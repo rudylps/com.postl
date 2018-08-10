@@ -1,0 +1,142 @@
+package com.postl.controller;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
+
+import com.postl.model.Logement;
+import com.postl.repository.ILogementRepository;
+
+@RestController
+@RequestMapping("")
+public class LogementController {
+
+	@Autowired
+	ILogementRepository iLogementRepository;
+
+	@GetMapping("/logements")
+	public List<Logement> getAllLogements() {
+		return iLogementRepository.findAll();
+	}
+
+	@GetMapping("/logement/{logement_id}")
+	public Optional<Logement> findOneLogement(@PathVariable(value = "logement_id") Long logement_id) {
+		return iLogementRepository.findById(logement_id);
+	}
+
+	@PutMapping("/logement/{logement_id}")
+	public Logement updateLogement(@PathVariable Long logement_id,
+			@Valid @RequestBody Logement logementDetails) {
+		
+		return iLogementRepository.findById(logement_id).map(logement -> {
+			
+			logement.setPhoto(logementDetails.getPhoto());
+			logement.setNumero_rue(logementDetails.getNumero_rue());
+			logement.setType_rue(logementDetails.getType_rue());
+			logement.setNom_rue(logementDetails.getNom_rue());
+			logement.setComplement_adresse(logementDetails.getComplement_adresse());
+			logement.setCode_postal(logementDetails.getCode_postal());
+			logement.setVille(logementDetails.getVille());
+			logement.setPrix_nuit(logementDetails.getPrix_nuit());
+			logement.setDescription(logementDetails.getDescription());
+			return iLogementRepository.save(logement);
+			
+		}).orElseThrow(() -> new ResourceAccessException(logement_id + " ??"));
+	}
+	
+//	@PutMapping("/logement/{logement_id}")
+//	public ResponseEntity<ApiResponse> updateLogement(@PathVariable Long logement_id,
+//			@Valid @RequestBody LogementRequest logementDetails) {
+//		
+//			//CHERCHER LOGEMENT EN UTILISANT ID ET ENVOYER ERREUR SI LOGEMENT NON TROUVE
+//			Logement logement = iLogementRepository.findById(logement_id).orElseThrow(() -> new ResourceNotFoundException("Logement", "logement_id", logement_id));		
+//			
+//			logement.setPhoto(logementDetails.getPhoto());
+//			logement.setNumero_rue(logementDetails.getNumero_rue());
+//			logement.setType_rue(logementDetails.getType_rue());
+//			logement.setNom_rue(logementDetails.getNom_rue());
+//			logement.setComplement_adresse(logementDetails.getComplement_adresse());
+//			logement.setCode_postal(logementDetails.getCode_postal());
+//			logement.setVille(logementDetails.getVille());
+//			logement.setPrix_nuit(logementDetails.getPrix_nuit());
+//			logement.setDescription(logementDetails.getDescription());
+//			
+//			//EXTRAIRE L'ID DE L'UTILISATEUR
+//			Long utilisateur_id = logementDetails.getUtilisateur_id();
+//			//LE RETROUVER DANS LA BASE DE DONNEE S'IL EXISTE
+//			Utilisateur utilisateur =  iUtilisateurRepository.findById(utilisateur_id).orElseThrow(() -> new ResourceNotFoundException("Utilisateur", "id", utilisateur_id));
+//			//LE LIER AU LOGEMENT QUE L'ON VA ENREGISTRER DANS LA BDD
+//			logement.setUtilisateur(utilisateur);
+//			
+//			//SAUVEGARDER LOGEMENT DANS LA BDD 
+//			Logement result = iLogementRepository.save(logement);
+//	        
+//	        URI location = ServletUriComponentsBuilder
+//	                .fromCurrentContextPath().path("/logement/{logement_id}")
+//	                .buildAndExpand(result.getPhoto()).toUri();
+//	        
+//	        //RENVOYER CONFIRMATION CREATION UTILISATEUR AVEC URI LOCATION
+//	        return ResponseEntity.created(location).body(new ApiResponse(true, "Logement modifié avec succès"));
+//	}
+
+	@PostMapping("/createLogement")
+	public Logement createLogement(@Valid @RequestBody Logement logement) {
+		return iLogementRepository.save(logement);
+	}
+	
+//	@PostMapping("/createLogement")
+//	public ResponseEntity<ApiResponse> createLogement(@Valid @RequestBody LogementRequest logement) {
+//		
+//		// VERIFIER SI LOGEMENT EXISTE. 
+//				 if(iLogementRepository.existsByPhoto(logement.getPhoto())) {
+//			            return new ResponseEntity<>(new ApiResponse(false, "Logement déjà enregistré"),
+//			                    HttpStatus.BAD_REQUEST);
+//			        }
+//				
+//				//MAPPER LES INFOS DE LA REQUETE A UN OBJET TEMPORAIRE
+//				 Logement nouveauLogement = new Logement(
+//						 	null,
+//						 	logement.getPhoto(),
+//							logement.getNumero_rue(),
+//							logement.getType_rue(),
+//							logement.getNom_rue(),
+//							logement.getComplement_adresse(),
+//							logement.getCode_postal(),
+//							logement.getVille(),
+//							logement.getPrix_nuit(),
+//							logement.getDescription(),
+//							null
+//				 
+//				 );
+//				 
+//				//SAUVEGARDER LOGEMENT 
+//				 Logement result = iLogementRepository.save(nouveauLogement);
+//
+//		        URI location = ServletUriComponentsBuilder
+//		                .fromCurrentContextPath().path("/logement/{logement_id}")
+//		                .buildAndExpand(result.getNumero_rue()).toUri();
+//		        
+//		        //RENVOYER CONFIRMATION CREATION LOGEMENT AVEC URI LOCATION
+//		        return ResponseEntity.created(location).body(new ApiResponse(true, "Logement enregistré avec succès."));
+//	}
+
+	@DeleteMapping("/logement/{logement_id}")
+	public ResponseEntity<?> deleteLogement(@PathVariable(value = "logement_id") Long logement_id) {
+		iLogementRepository.deleteById(logement_id);
+		return ResponseEntity.ok().build();
+	}
+
+}
