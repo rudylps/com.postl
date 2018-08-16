@@ -22,7 +22,7 @@ import com.postl.model.Utilisateur;
 import com.postl.repository.IUtilisateurRepository;
 
 @RestController
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin("*")
 @RequestMapping("")
 public class UtilisateurController {
 

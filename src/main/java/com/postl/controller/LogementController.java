@@ -23,7 +23,7 @@ import com.postl.model.Logement;
 import com.postl.repository.ILogementRepository;
 
 @RestController
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin("*")
 @RequestMapping("")
 public class LogementController {
 
