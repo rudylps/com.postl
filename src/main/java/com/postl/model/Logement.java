@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+@CrossOrigin("*")
 @Entity
 @Table(name = "logements")
-@CrossOrigin("*")
 public class Logement {
 
 	@Id
