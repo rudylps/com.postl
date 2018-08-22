@@ -22,8 +22,8 @@ import org.springframework.web.client.ResourceAccessException;
 import com.postl.model.Logement;
 import com.postl.repository.ILogementRepository;
 
+@CrossOrigin("http://localhost:4200")
 @RestController
-@CrossOrigin("*")
 @RequestMapping("")
 public class LogementController {
 
@@ -45,7 +45,7 @@ public class LogementController {
 			@RequestParam(name="ville", defaultValue="") String ville,
 			@RequestParam(name="cp", defaultValue="") String cp
 			) {
-		return iLogementRepository.chercher("%" + ville + "%", "%" + cp + "%");
+		return iLogementRepository.chercher("%" + ville + "%", cp + "%");
 	}
 
 	@PutMapping("/logement/{logement_id}")

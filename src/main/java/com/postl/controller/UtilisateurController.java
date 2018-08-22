@@ -21,8 +21,8 @@ import org.springframework.web.client.ResourceAccessException;
 import com.postl.model.Utilisateur;
 import com.postl.repository.IUtilisateurRepository;
 
+@CrossOrigin("http://localhost:4200")
 @RestController
-@CrossOrigin("*")
 @RequestMapping("")
 public class UtilisateurController {
 
